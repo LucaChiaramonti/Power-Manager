@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 public class HtmlUtil {
     public static final String powerFirstClassRegex = "<h6>Level<\\/h6><p>(.*?)<a class=\"addcustom\"";
     public static final String powerClassRegex = "<\\/a>, (.*?)<a";
+    public static final String powerNameRegex = "(?<=href=\\\"\\/powers\\/)(.*)(?=\\\" title=)";
+
     private static Log _log = LogFactory.getLog(HtmlUtil.class);
     public static String extractText(String text, String regex) {
         Pattern pattern = Pattern.compile(regex);

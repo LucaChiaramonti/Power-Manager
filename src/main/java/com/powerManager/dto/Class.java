@@ -19,9 +19,4 @@ public class Class {
 
     @Column
     private String className;
-/*
-    @OneToMany(mappedBy = "classId", cascade = CascadeType.ALL)
-    Set<ClassLevel> classLevels;
-
- */
 }

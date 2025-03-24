@@ -5,10 +5,7 @@ import com.powerManager.bin.PowerBin;
 import com.powerManager.serializer.TestSerializer;
 import com.powerManager.service.PowersService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -21,10 +18,10 @@ public class PowerController {
     PowersService powersService;
 
 
-    @GetMapping("/{level}")
+    @PostMapping()
     @JsonSerialize(using = TestSerializer.class)
-    public Set<String> importPowers(@PathVariable("level")Integer powerLevel) {
-        return powersService.callExternalAPI(powerLevel);
+    public Set<String> importPowers() {
+        return powersService.readMainPage();
 
     }
 
