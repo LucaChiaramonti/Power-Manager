@@ -13,10 +13,13 @@ import java.util.Set;
 public class Class {
 
     @Id
-    @Column
+    @Column(name = "id_class")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idClass;
 
     @Column
     private String className;
+
+    @OneToMany(mappedBy = "level",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClassLevel> classLevels;
 }

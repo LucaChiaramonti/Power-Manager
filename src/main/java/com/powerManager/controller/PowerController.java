@@ -33,10 +33,16 @@ public class PowerController {
     }
 
     @GetMapping("/name={name}")
-    @JsonSerialize(using = TestSerializer.class)
     public List<PowerBin> getPowersFromName(@PathVariable("name")String name) {
-        return powersService.getPowersFromName(name);
+        List<PowerBin> powerBins = powersService.getPowersFromName(name);
+        return powerBins;
 
+    }
+
+    @DeleteMapping
+    @JsonSerialize(using = TestSerializer.class)
+    public void deleteAll() {
+        powersService.deleteAll();
     }
 
 }

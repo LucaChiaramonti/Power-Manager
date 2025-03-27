@@ -40,4 +40,7 @@ public class LevelService {
             throw new RuntimeException("Level not found with id " + id);
         }
     }
+    public void deleteAll() {
+        levelRepository.deleteAll();
+    }
 }
