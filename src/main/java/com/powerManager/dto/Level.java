@@ -15,9 +15,7 @@ public class Level {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idLevel;
-/*
-    @OneToMany(mappedBy = "levelId", cascade = CascadeType.ALL)
-    Set<ClassLevel> classLevels;
 
-*/
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ClassLevel> classLevels;
 }

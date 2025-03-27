@@ -42,6 +42,8 @@ public class PowersService {
     @Autowired
     private ClassRepository classRepository;
     @Autowired
+    private PowerClassRepository powerClassRepository;
+    @Autowired
     private ClassLevelRepository classLevelRepository;
     @Autowired
     private LevelService levelService;
@@ -91,45 +93,43 @@ public class PowersService {
 
     private PowerBin readPowerPage(String powerUrl) {
         String powerResponse = callAPI(powerUrl);
-        if (powerResponse == null) {
+        if(powerResponse == null) {
             return null;
         }
 
         PowerBin power = new PowerBin();
         power.setPowerName(PowerUtil.extractName(powerResponse));
-        if (powerRepository.findPowerFromName(power.getPowerName()) != null) {
+        if(!powerRepository.findPowerFromName(power.getPowerName()).isEmpty()) {
             _log.info("Power already saved: " + power.getPowerName());
             return null;
         }
-
         String powerCostFound = PowerUtil.extractCost(powerResponse);
-        if (!powerCostFound.isEmpty()) {
-            processPowerCost(power, powerCostFound, powerResponse);
-        }
 
         power.setPowerDescription(PowerUtil.extractDescription(powerResponse.replaceAll("\\r|\\n", "").replaceAll("\t\t\t", "")));
         Power savedPower = savePower(power);
         _log.info("Power saved: " + savedPower.getPowerName());
 
-        if (powerResponse.contains("augment")) {
+        if(!powerCostFound.isEmpty()) {
+            processPowerCost(power, powerCostFound, powerResponse, savedPower);
+        }
+
+        if(powerResponse.contains("augment")) {
             processAugments(savedPower, powerResponse);
         }
 
         return power;
     }
 
-    private void processPowerCost(PowerBin power, String powerCostFound, String powerResponse) {
+    private void processPowerCost(PowerBin power, String powerCostFound, String powerResponse, Power savedPower) {
         List<String> powerCostList = PowerUtil.buildPowerCostList(powerCostFound.replace(", XP", ""));
-        power.setPowerCost(Integer.parseInt(powerCostList.get(0)));
         _log.info("Saving class...");
 
         for (String powerCost : powerCostList) {
             try {
                 Map<String, Long> classLevelList = PowerUtil.extractClassList(powerResponse);
                 for (Map.Entry<String, Long> entry : classLevelList.entrySet()) {
-                    saveClassLevel(entry.getKey(), entry.getValue());
+                    saveClassLevel(entry.getKey(), entry.getValue(), savedPower);
                 }
-                power.setPowerLevel(powerCostFound.equals("1") ? 1 : PowerUtil.getPowerLevel(powerCost));
             } catch (RuntimeException e) {
                 _log.error("Error saving class for power: " + power.getPowerName(), e);
                 throw e;
@@ -138,22 +138,28 @@ public class PowersService {
         _log.info("Class saved");
     }
 
-    private void saveClassLevel(String className, Long levelValue) {
+    private void saveClassLevel(String className, Long levelValue, Power power) {
         Level levelDto = levelService.findById(levelValue).orElseThrow(() -> new RuntimeException("Level not valid"));
         Class classDto = classRepository.findClassByClassName(className);
-        if (classDto == null) {
+        if(classDto == null) {
             classDto = new Class();
             classDto.setClassName(className);
         }
-        classRepository.save(classDto);
-        levelRepository.save(levelDto);
-        classLevelRepository.save(new ClassLevel(classDto, levelDto));
+
+        ClassLevel classLevelDto = new ClassLevel(classRepository.save(classDto),
+                levelRepository.save(levelDto));
+
+        classLevelRepository.save(classLevelDto);
+
+        powerClassRepository.save(new PowerClass(classLevelDto, power));
     }
 
     private void processAugments(Power savedPower, String powerResponse) {
         AugmentBin augmentBin = new AugmentBin();
-        String augmentBlock = HtmlUtil.extractText(powerResponse, "<div id=\"augments\">(.*?)<\\/div>");
-        if (augmentBlock.contains("li")) {
+        String noSpace = powerResponse.replaceAll("\\r|\\n", "").replaceAll("\t\t\t", "");
+        String augmentBlock = HtmlUtil.extractText(noSpace
+                , "<div id=\"augments\">(.*?)<\\/div>");
+        if(augmentBlock.contains("li")) {
             List<String> augmentList = Arrays.asList(augmentBlock.replaceAll("<h2>(.*?)<\\/p><ol>", "")
                     .replaceAll("</li>", "").replaceAll("</ol>", "").replaceFirst("<li>", "").replaceAll("\t", "").split("<li>"));
             for (String augment : augmentList) {
@@ -161,7 +167,7 @@ public class PowersService {
                 saveAugmentPower(savedPower, augmentBin);
             }
         } else {
-            augmentBin.setAugmentText(HtmlUtil.extractText(augmentBlock, "<p>(.*?)<\\/p>"));
+                augmentBin.setAugmentText(HtmlUtil.extractText(augmentBlock, "<p>(.*?)<\\/p>"));
             saveAugmentPower(savedPower, augmentBin);
         }
     }
@@ -179,8 +185,8 @@ public class PowersService {
                 success = true;
             } catch (Exception e) {
                 attempt++;
-                _log.error("Error reading power: " + powerUrl + ", attempt " + attempt, e);
-                if (attempt >= MAX_ATTEMPTS) {
+                _log.error("Error reading power: " + powerUrl + ", attempt " + attempt);
+                if(attempt >= MAX_ATTEMPTS) {
                     return null;
                 }
             } finally {
@@ -206,11 +212,29 @@ public class PowersService {
 
     public List<PowerBin> getPowersFromDescription(String description) {
         List<Power> powerList = powerRepository.findPowerFromDescription(description);
-        return powerMapper.toBin(powerList);
+        return buildPowerBinList(powerList);
     }
-
+    @Transactional
+    public void deleteAll() {
+        powerRepository.deleteAll();
+        augmentRepository.deleteAll();
+        powerClassRepository.deleteAll();
+        classRepository.deleteAll();
+        classLevelRepository.deleteAll();
+    }
     public List<PowerBin> getPowersFromName(String name) {
         List<Power> powerList = powerRepository.findPowerFromName(name);
-        return powerMapper.toBin(powerList);
+        return buildPowerBinList(powerList);
+    }
+
+
+    private List<PowerBin> buildPowerBinList(List<Power> powerList) {
+        List<ClassLevel> classLevel;
+        List<PowerBin> powerBinList = new ArrayList<>();
+        for (Power power : powerList) {
+            classLevel = classLevelRepository.getClassLevelByPowerName(power.getPowerName());
+            powerBinList.add(powerMapper.toBin(power, classLevel));
+        }
+        return powerBinList;
     }
 }

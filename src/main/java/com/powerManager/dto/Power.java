@@ -17,15 +17,15 @@ public class Power {
     private Long idPower;
     @Column
     private String powerName;
-    @Column
-    private String powerClass;
+
     @Column
     private Integer powerCost;
     @Column
     private String powerDescription;
     @Column
     private boolean isAugmentable;
-
+    @OneToMany(mappedBy="power")
+    private List<PowerClass> powerClass;
     @OneToMany(mappedBy="power")
     private List<Augment> augments;
 }

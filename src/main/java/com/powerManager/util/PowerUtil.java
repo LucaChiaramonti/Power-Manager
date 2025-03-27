@@ -23,6 +23,7 @@ public class PowerUtil {
     }
 
     public static String extractName(String powerResponse ) {
+
         return HtmlUtil.extractText(powerResponse, "\">([^<]+)</a></h1>");
     }
 
