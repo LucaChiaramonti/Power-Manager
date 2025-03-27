@@ -131,8 +131,7 @@ public class PowersService {
                     saveClassLevel(entry.getKey(), entry.getValue(), savedPower);
                 }
             } catch (RuntimeException e) {
-                _log.error("Error saving class for power: " + power.getPowerName(), e);
-                throw e;
+                _log.error("Error saving class for power: " + power.getPowerName());
             }
         }
         _log.info("Class saved");
@@ -150,8 +149,8 @@ public class PowersService {
                 levelRepository.save(levelDto));
 
         classLevelRepository.save(classLevelDto);
-
-        powerClassRepository.save(new PowerClass(classLevelDto, power));
+        PowerClass powerClass = new PowerClass(classLevelDto, power);
+        powerClassRepository.save(powerClass);
     }
 
     private void processAugments(Power savedPower, String powerResponse) {
@@ -218,9 +217,9 @@ public class PowersService {
     public void deleteAll() {
         powerRepository.deleteAll();
         augmentRepository.deleteAll();
-        powerClassRepository.deleteAll();
+//        powerClassRepository.deleteAll();
         classRepository.deleteAll();
-        classLevelRepository.deleteAll();
+//        classLevelRepository.deleteAll();
     }
     public List<PowerBin> getPowersFromName(String name) {
         List<Power> powerList = powerRepository.findPowerFromName(name);

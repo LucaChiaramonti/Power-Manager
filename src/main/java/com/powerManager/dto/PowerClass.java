@@ -28,6 +28,7 @@ public class PowerClass {
         this.id = new PowerClassId(powerEntity.getIdPower(), classEntity.getId().toString());
         level = classEntity.getId().getLevelId();
         className = classEntity.getClassName();
+        power = powerEntity;
     }
 }
 
