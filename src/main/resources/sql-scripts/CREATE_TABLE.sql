@@ -1,3 +1,13 @@
+CREATE TABLE `power` (
+  `id_power` int NOT NULL AUTO_INCREMENT,
+  `power_name` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
+  `power_cost` int DEFAULT NULL,
+  `power_description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
+  `power_class` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `is_augmentable` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id_power`)
+) ENGINE=InnoDB AUTO_INCREMENT=5720 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
 CREATE TABLE `augment` (
   `id_augument` int NOT NULL AUTO_INCREMENT,
   `augment_text` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
@@ -31,17 +41,6 @@ CREATE TABLE `level` (
   UNIQUE KEY `idLevel_UNIQUE` (`id_level`),
   UNIQUE KEY `level_UNIQUE` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
-
-
-CREATE TABLE `power` (
-  `id_power` int NOT NULL AUTO_INCREMENT,
-  `power_name` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL,
-  `power_cost` int DEFAULT NULL,
-  `power_description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
-  `power_class` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
-  `is_augmentable` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id_power`)
-) ENGINE=InnoDB AUTO_INCREMENT=5720 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 
 CREATE TABLE `power_class` (

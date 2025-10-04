@@ -223,6 +223,7 @@ public class PowersService {
     }
     public List<PowerBin> getPowersFromName(String name) {
         List<Power> powerList = powerRepository.findPowerFromName(name);
+        _log.info("Modifica effettuata");
         return buildPowerBinList(powerList);
     }
 

@@ -8,4 +8,8 @@ import lombok.Setter;
 public class AugmentBin {
     private String augmentText;
 
+    @Override
+    public String toString() {
+        return augmentText;
+    }
 }

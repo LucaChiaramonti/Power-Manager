@@ -8,4 +8,9 @@ import lombok.Setter;
 public class PowerClassBin {
     private String className;
     private long levelValue;
+
+    @Override
+    public String toString() {
+        return className + ' ' + levelValue;
+    }
 }
