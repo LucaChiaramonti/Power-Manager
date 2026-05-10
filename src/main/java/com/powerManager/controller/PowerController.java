@@ -17,7 +17,6 @@ public class PowerController {
     @Autowired
     PowersService powersService;
 
-
     @PostMapping()
     @JsonSerialize(using = TestSerializer.class)
     public Set<String> importPowers() {
