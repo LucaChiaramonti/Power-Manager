@@ -25,6 +25,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: spring-container
+    env_file:
+      - .env
     ports:
       - "8081:8080"
     depends_on:
