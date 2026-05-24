@@ -139,7 +139,7 @@ public class PowersService {
     }
 
     private void saveClassLevel(String className, Long levelValue, Power power) {
-        Level levelDto = levelService.findById(levelValue).orElseThrow(() -> new RuntimeException("Level not valid"));
+        Level levelDto = levelService.findById(levelValue).orElseThrow(() -> new RuntimeException("Level not valid " + levelValue + " for power " + power.getPowerName()));
         Class classDto = classRepository.findClassByClassName(className);
         if(classDto == null) {
             classDto = new Class();
