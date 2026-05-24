@@ -132,6 +132,7 @@ public class PowersService {
                 }
             } catch (RuntimeException e) {
                 _log.error("Error saving class for power: " + power.getPowerName());
+                _log.error(e.getMessage());
             }
         }
         _log.info("Class saved");
