@@ -13,6 +13,7 @@ public class PowerBin {
     private String powerDescription;
     private List<PowerClassBin> powerClassBins;
     private List<AugmentBin> augmentBins;
+    private String classLevelsAsString;
 
     public String getClassLevelsAsString() {
         return powerClassBins.stream()

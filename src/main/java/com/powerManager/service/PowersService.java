@@ -145,9 +145,10 @@ public class PowersService {
             classDto.setClassName(className);
         }
 
-        ClassLevel classLevelDto = new ClassLevel(classRepository.save(classDto),
-                levelRepository.save(levelDto));
-
+        ClassLevel classLevelDto = new ClassLevel(classDto,
+            levelDto);
+        levelRepository.save(levelDto);
+        classRepository.save(classDto);
         classLevelRepository.save(classLevelDto);
         PowerClass powerClass = new PowerClass(classLevelDto, power);
         powerClassRepository.save(powerClass);
@@ -215,11 +216,12 @@ public class PowersService {
     }
     @Transactional
     public void deleteAll() {
-        powerRepository.deleteAll();
         augmentRepository.deleteAll();
-//        powerClassRepository.deleteAll();
+        powerClassRepository.deleteAll();
+        classLevelRepository.deleteAll();
         classRepository.deleteAll();
-//        classLevelRepository.deleteAll();
+        powerRepository.deleteAll();
+
     }
     public List<PowerBin> getPowersFromName(String name) {
         List<Power> powerList = powerRepository.findPowerFromName(name);

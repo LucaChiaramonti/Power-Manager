@@ -2,15 +2,12 @@ package com.powerManager.mapper;
 
 
 import com.powerManager.bin.PowerBin;
-import com.powerManager.dto.Augment;
 import com.powerManager.dto.ClassLevel;
 import com.powerManager.dto.Power;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface PowerMapper {
