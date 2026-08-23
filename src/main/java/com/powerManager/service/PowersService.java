@@ -12,6 +12,7 @@ import com.powerManager.util.PowerUtil;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -240,4 +241,5 @@ public class PowersService {
         }
         return powerBinList;
     }
+
 }
